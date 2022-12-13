@@ -71,11 +71,25 @@ namespace ScrumBoard.FrontEnd
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller}/{action=Index}/{id?}");
+            app.UseEndpoints(config =>
+            {
+                config.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
 
-            app.MapFallbackToFile("index.html");
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSpa(config =>
+                {
+                    config.UseProxyToSpaDevelopmentServer("https://localhost:3000");
+                    config.Options.SourcePath = "/ClientApp";
+                });
+            }
+            else
+            {
+                app.MapFallbackToFile("index.html");
+            }
 
             app.Run();
         }

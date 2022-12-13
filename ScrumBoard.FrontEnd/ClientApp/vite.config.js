@@ -15,7 +15,7 @@ export default defineConfig(({ command, mode }) => {
       port: 3000,
       strictPort: true,
       proxy: {
-        '/api' : {
+        '/api': {
           target: 'https://localhost:433',
           changeOrigin: true,
           secure: false,
