@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prestart": "node ./aspnetcore-https.js",
     "start": "vite --debug",
     "dev": "vite",
     "build": "vite build",

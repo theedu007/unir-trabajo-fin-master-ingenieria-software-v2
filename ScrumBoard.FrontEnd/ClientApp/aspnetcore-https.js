@@ -1,7 +1,7 @@
 // This script sets up HTTPS for the application using the ASP.NET Core HTTPS certificate
 import { existsSync } from 'fs';
 import { spawn } from 'child_process';
-import { join } from 'path';
+import { join } from 'path';  
 
 const baseFolder =
   process.env.APPDATA !== undefined && process.env.APPDATA !== ''
