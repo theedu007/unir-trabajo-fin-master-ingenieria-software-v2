@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using ScrumBoard.Common.Extensions.WebBuilderExtensions;
 using ScrumBoard.Common.Identity;
 using OpenIddict.Abstractions;
+using ScrumBoard.BackEnd.Services;
+using ScrumBoard.Common.Application;
 
 namespace ScrumBoard.BackEnd
 {
@@ -15,13 +17,15 @@ namespace ScrumBoard.BackEnd
             var builder = WebApplication.CreateBuilder(args)
                 .AddLocalAppSettings();
             var configuration = builder.Configuration;
-            // Add services to the container.
 
-            builder.Services.AddDbContext<ApplicationIdentityDbContext>(config =>
-            {
-                config.UseSqlServer(configuration.GetConnectionString("IdentityDb"),
-                    x => x.MigrationsAssembly("ScrumBoard.Common"));
-            });
+            //MongoDb class mapper
+            BsonClassMapper.MapClasses();
+
+            builder.Services.Configure<ApplicationDbSettings>(options =>
+                configuration.GetSection("ApplicationDbSettings").Bind(options));
+
+            builder.Services.AddTransient<ApplicationDbContext>();
+            builder.Services.AddTransient<WorkspaceService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
