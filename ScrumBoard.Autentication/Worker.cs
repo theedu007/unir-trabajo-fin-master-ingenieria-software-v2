@@ -1,4 +1,5 @@
-﻿using OpenIddict.Abstractions;
+﻿using System.Globalization;
+using OpenIddict.Abstractions;
 using ScrumBoard.Common.Identity;
 
 namespace ScrumBoard.Authentication
@@ -18,6 +19,7 @@ namespace ScrumBoard.Authentication
             await context.Database.EnsureCreatedAsync();
 
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            var introspection = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
 
             if (await manager.FindByClientIdAsync("apitest") == null)
             {
@@ -48,9 +50,10 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "demo_api"
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "metadata",
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "authorization",
                     },
-                        Requirements =
+                        Requirements =  
                     {
                         OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
                     }
@@ -82,14 +85,97 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.GrantTypes.Password,
                         OpenIddictConstants.Permissions.ResponseTypes.Code,
                         OpenIddictConstants.Permissions.ResponseTypes.Token,
+                        OpenIddictConstants.Permissions.ResponseTypes.CodeToken,
+                        OpenIddictConstants.Permissions.ResponseTypes.CodeIdTokenToken,
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "demo_api"
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "frontend",
                     },
                     Requirements =
                     {
                         OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+                    }
+
+                });
+            }
+            if (await manager.FindByClientIdAsync("Metadata") == null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "Metadata",
+                    ClientSecret = "bf726f87-6c5a-4a90-952e-81906169ef10",
+                    ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
+                    DisplayName = "Metadata API",
+                    Permissions =
+                    {
+                        OpenIddictConstants.Permissions.Endpoints.Logout,
+                        OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                        OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                        OpenIddictConstants.Permissions.ResponseTypes.Code,
+                        OpenIddictConstants.Permissions.ResponseTypes.Token,
+                        OpenIddictConstants.Permissions.Scopes.Email,
+                        OpenIddictConstants.Permissions.Scopes.Profile,
+                        OpenIddictConstants.Permissions.Scopes.Roles,
+                    },
+                    Requirements =
+                    {
+                        OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+                    }
+                });
+            }
+            if (await manager.FindByClientIdAsync("Authorization") == null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "Authorization",
+                    ClientSecret = "1bd66f3c-80e3-11ed-a1eb-0242ac120002",
+                    ConsentType = OpenIddictConstants.ConsentTypes.Implicit,
+                    DisplayName = "Authorization API",
+                    Permissions =
+                    {
+                        OpenIddictConstants.Permissions.Endpoints.Logout,
+                        OpenIddictConstants.Permissions.Endpoints.Token,
+                        OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                        OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                        OpenIddictConstants.Permissions.ResponseTypes.Code,
+                        OpenIddictConstants.Permissions.ResponseTypes.Token,
+                        OpenIddictConstants.Permissions.Scopes.Email,
+                        OpenIddictConstants.Permissions.Scopes.Profile,
+                        OpenIddictConstants.Permissions.Scopes.Roles,
+                    },
+                    Requirements =
+                    {
+                        OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+                    }
+                });
+            }
+
+            if (await introspection.FindByNameAsync("metadata") is null)
+            {
+                await introspection.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "metadata",
+                    DisplayNames = { { CultureInfo.InvariantCulture, "Metadata api access" } },
+                    Resources =
+                    {
+                        "authorization"
+                    }
+                });
+            }
+
+            if (await introspection.FindByNameAsync("frontend") is null)
+            {
+                await introspection.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "frontend",
+                    DisplayNames = { { CultureInfo.InvariantCulture, "FrontEnd app access" } },
+                    Resources =
+                    {
+                        "Metadata",
+                        "Authorization",
+                        "ScrumBoardFrontendApp"
                     }
                 });
             }

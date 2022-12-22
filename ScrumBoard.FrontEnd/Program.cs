@@ -46,6 +46,7 @@ namespace ScrumBoard.FrontEnd
 
                 options.Scope.Add("email");
                 options.Scope.Add("roles");
+                options.Scope.Add("frontend");
 
                 // Disable the built-in JWT claims mapping feature.
                 options.MapInboundClaims = false;

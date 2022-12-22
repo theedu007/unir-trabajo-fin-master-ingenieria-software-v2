@@ -136,6 +136,7 @@ namespace ScrumBoard.Authentication.Controllers
                     // but you may want to allow the user to uncheck specific scopes.
                     // For that, simply restrict the list of scopes before calling SetScopes.
                     principal.SetScopes(request.GetScopes());
+                    var a = await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync();
                     principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
 
                     // Automatically create a permanent authorization to avoid requiring explicit consent
@@ -308,7 +309,7 @@ namespace ScrumBoard.Authentication.Controllers
                     Scopes.Email,
                     Scopes.Profile,
                     Scopes.OfflineAccess,
-                    Scopes.Roles
+                    Scopes.Roles,
                 }.Intersect(request.GetScopes()));
 
                 foreach (var claim in principal.Claims)

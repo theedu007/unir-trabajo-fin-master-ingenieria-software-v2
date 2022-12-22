@@ -9,6 +9,6 @@ namespace ScrumBoard.Common.Identity.Entities
 {
     public class ApplicationUser : IdentityUser<int>
     {
-
+        public IList<UserWorkspace> UserWorkpaces { get; set; } = new List<UserWorkspace>();
     }
 }

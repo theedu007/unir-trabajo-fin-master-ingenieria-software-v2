@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using Quartz;
 using ScrumBoard.Common.Extensions.WebBuilderExtensions;
@@ -14,7 +15,6 @@ namespace ScrumBoard.Authentication
         {
             var builder = WebApplication.CreateBuilder(args)
                 .AddLocalAppSettings();
-                        var connectionString = builder.Configuration.GetConnectionString("ApplicationIdentityDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationIdentityDbContextConnection' not found.");
 
             var configuration = builder.Configuration;
             // Add services to the container.
@@ -63,7 +63,7 @@ namespace ScrumBoard.Authentication
                     options.SetAuthorizationEndpointUris("/connect/authorize")
                         .SetLogoutEndpointUris("/connect/logout")
                         .SetTokenEndpointUris("/connect/token")
-                        .SetUserinfoEndpointUris("/connect/userinfo");
+                        .SetIntrospectionEndpointUris("/connect/introspection");
 
                     // Mark the "email", "profile" and "roles" scopes as supported scopes.
                     options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles);
@@ -72,6 +72,7 @@ namespace ScrumBoard.Authentication
                     options.AllowAuthorizationCodeFlow();
                     options.AllowPasswordFlow();
                     options.AllowRefreshTokenFlow();
+                    options.AllowClientCredentialsFlow();
 
                     // Register the signing and encryption credentials.
                     options.AddDevelopmentEncryptionCertificate()
