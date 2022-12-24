@@ -7,13 +7,15 @@ using ScrumBoard.Common.Identity.Entities;
 
 namespace ScrumBoard.BackEnd.Services
 {
-    public class WorkspaceService
+    public class WorkspaceUiService
     {
         private readonly ApplicationDbContext _applicationContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public WorkspaceService(ApplicationDbContext applicationContext)
+        public WorkspaceUiService(ApplicationDbContext applicationContext, IHttpContextAccessor httpContextAccessor)
         {
             _applicationContext = applicationContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<Workspace>> GetWorkspacesForUserAsync(Guid userGuid, CancellationToken cancellationToken = default)

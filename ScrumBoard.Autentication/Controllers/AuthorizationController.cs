@@ -136,7 +136,6 @@ namespace ScrumBoard.Authentication.Controllers
                     // but you may want to allow the user to uncheck specific scopes.
                     // For that, simply restrict the list of scopes before calling SetScopes.
                     principal.SetScopes(request.GetScopes());
-                    var a = await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync();
                     principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
 
                     // Automatically create a permanent authorization to avoid requiring explicit consent
@@ -303,6 +302,8 @@ namespace ScrumBoard.Authentication.Controllers
                 // Set the list of scopes granted to the client application.
                 // Note: the offline_access scope must be granted
                 // to allow OpenIddict to return a refresh token.
+                principal.SetScopes(request.GetScopes());
+                principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
                 principal.SetScopes(new[]
                 { 
                     Scopes.OpenId,

@@ -13,9 +13,9 @@ namespace ScrumBoard.BackEnd.Controllers
     [Authorize]
     public class WorkspaceController : ControllerBase
     {
-        private readonly WorkspaceService _workspaceService;
+        private readonly WorkspaceUiService _workspaceService;
 
-        public WorkspaceController(WorkspaceService workspaceService)
+        public WorkspaceController(WorkspaceUiService workspaceService)
         {
             _workspaceService = workspaceService;
         }

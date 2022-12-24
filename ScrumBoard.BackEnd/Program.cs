@@ -7,6 +7,7 @@ using ScrumBoard.Common.Identity;
 using OpenIddict.Abstractions;
 using ScrumBoard.BackEnd.Services;
 using ScrumBoard.Common.Application;
+using ScrumBoard.Common.Helpers;
 
 namespace ScrumBoard.BackEnd
 {
@@ -20,12 +21,13 @@ namespace ScrumBoard.BackEnd
 
             //MongoDb class mapper
             BsonClassMapper.MapClasses();
-
+            builder.Services.AddNamedHttpClients(configuration);
+            builder.Services.AddHttpContextAccessor();
             builder.Services.Configure<ApplicationDbSettings>(options =>
                 configuration.GetSection("ApplicationDbSettings").Bind(options));
 
             builder.Services.AddTransient<ApplicationDbContext>();
-            builder.Services.AddTransient<WorkspaceService>();
+            builder.Services.AddTransient<WorkspaceUiService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,14 +42,15 @@ namespace ScrumBoard.BackEnd
             .AddJwtBearer(options =>
             {
                 options.Authority = "https://localhost:5001";
-                options.Audience = "Metadata";
+                options.SaveToken = true;
 
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidAudiences = new List<string>()
                     {
                         "apitest",
-                        "ScrumBoardFrontendApp"
+                        "ScrumBoardFrontendApp",
+                        "Authorization",
                     }
                 };
             });

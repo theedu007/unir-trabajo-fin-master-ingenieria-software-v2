@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using ScrumBoard.Common.Extensions.WebBuilderExtensions;
+using ScrumBoard.Common.Helpers;
 
 namespace ScrumBoard.FrontEnd
 {
@@ -15,6 +16,8 @@ namespace ScrumBoard.FrontEnd
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddNamedHttpClients(configuration);
             builder.Services.AddSpaStaticFiles(config => config.RootPath = "ClientApp/dist");
             builder.Services.AddAuthentication(config =>
             {

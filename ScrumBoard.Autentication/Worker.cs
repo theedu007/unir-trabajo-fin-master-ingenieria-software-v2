@@ -50,8 +50,7 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "metadata",
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "authorization",
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "apitest"
                     },
                         Requirements =  
                     {
@@ -90,7 +89,8 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "frontend",
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "frontend"
+
                     },
                     Requirements =
                     {
@@ -118,6 +118,7 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "metadata"
                     },
                     Requirements =
                     {
@@ -144,6 +145,7 @@ namespace ScrumBoard.Authentication
                         OpenIddictConstants.Permissions.Scopes.Email,
                         OpenIddictConstants.Permissions.Scopes.Profile,
                         OpenIddictConstants.Permissions.Scopes.Roles,
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "authorization"
                     },
                     Requirements =
                     {
@@ -160,7 +162,7 @@ namespace ScrumBoard.Authentication
                     DisplayNames = { { CultureInfo.InvariantCulture, "Metadata api access" } },
                     Resources =
                     {
-                        "authorization"
+                        "Metadata"
                     }
                 });
             }
@@ -173,9 +175,33 @@ namespace ScrumBoard.Authentication
                     DisplayNames = { { CultureInfo.InvariantCulture, "FrontEnd app access" } },
                     Resources =
                     {
-                        "Metadata",
-                        "Authorization",
                         "ScrumBoardFrontendApp"
+                    }
+                });
+            }
+
+            if (await introspection.FindByNameAsync("authorization") is null)
+            {
+                await introspection.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "authorization",
+                    DisplayNames = { { CultureInfo.InvariantCulture, "Authorization API" } },
+                    Resources =
+                    {
+                        "Authorization"
+                    }
+                });
+            }
+
+            if (await introspection.FindByNameAsync("apitest") is null)
+            {
+                await introspection.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "apitest",
+                    DisplayNames = { { CultureInfo.InvariantCulture, "test user for api" } },
+                    Resources =
+                    {
+                        "apitest"
                     }
                 });
             }
