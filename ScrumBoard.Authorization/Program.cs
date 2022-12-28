@@ -24,6 +24,7 @@ namespace ScrumBoard.Authorization
                 config.UseSqlServer(configuration.GetConnectionString("IdentityDb"));
             });
 
+            builder.Services.SetupAutomapper();
             builder.Services.AddTransient<WorkspaceService>();
 
             builder.Services.AddHttpContextAccessor();

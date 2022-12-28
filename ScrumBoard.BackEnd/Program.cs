@@ -26,6 +26,7 @@ namespace ScrumBoard.BackEnd
             builder.Services.Configure<ApplicationDbSettings>(options =>
                 configuration.GetSection("ApplicationDbSettings").Bind(options));
 
+            builder.Services.SetupAutomapper();
             builder.Services.AddTransient<ApplicationDbContext>();
             builder.Services.AddTransient<WorkspaceUiService>();
 

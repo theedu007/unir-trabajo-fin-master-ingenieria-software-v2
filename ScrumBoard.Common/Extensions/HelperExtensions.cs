@@ -14,6 +14,6 @@ namespace ScrumBoard.Common.Extensions
     public static class HelperExtensions
     {
         public static string GetUserId(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.FindFirstValue("sub");
-        public static async Task<string?> GetUserAccessToken(this HttpContext context) => await context.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+        public static async Task<string?> GetUserAccessTokenAsync(this HttpContext context) => await context.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
     }
 }

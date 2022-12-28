@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -82,6 +83,18 @@ namespace ScrumBoard.FrontEnd
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
+            app.Use(async (context, next) =>
+            {
+                if (context.User.Identity != null && !context.User.Identity.IsAuthenticated)
+                {
+                    await context.ChallengeAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                }
+                else
+                {
+                    await next();
+                }
+            });
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSpa(config =>
@@ -89,10 +102,6 @@ namespace ScrumBoard.FrontEnd
                     config.UseProxyToSpaDevelopmentServer("https://localhost:3000");
                     config.Options.SourcePath = "/ClientApp";
                 });
-            }
-            else
-            {
-                app.MapFallbackToFile("index.html");
             }
 
             app.Run();

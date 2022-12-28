@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScrumBoard.Authorization.Services;
@@ -12,11 +13,13 @@ namespace ScrumBoard.Authorization.Controllers
     [Authorize]
     public class WorkspaceController : ControllerBase
     {
-        private WorkspaceService _workspaceService;
+        private readonly WorkspaceService _workspaceService;
+        private readonly IMapper _mapper;
 
-        public WorkspaceController(WorkspaceService workpsaService)
+        public WorkspaceController(WorkspaceService workspaceService, IMapper mapper)
         {
-            _workspaceService = workpsaService;
+            _workspaceService = workspaceService;
+            _mapper = mapper;
         }
 
         [HttpPost("create")]
@@ -24,13 +27,9 @@ namespace ScrumBoard.Authorization.Controllers
         {
             try
             {
-                var workspace = new Workspace
-                {
-                    DisplayName = workspaceDto.DisplayName,
-                    PublicKey = Guid.NewGuid(),
-                };
+                var workspace = _mapper.Map<Workspace>(workspaceDto);
                 var result = await _workspaceService.CreateWorkspaceForUserAsync(workspace, cancellationToken);
-                return Ok(result);
+                return Ok(_mapper.Map<WorkspaceDto>(result));
             }
             catch (Exception)
             {

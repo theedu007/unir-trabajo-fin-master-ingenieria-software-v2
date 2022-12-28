@@ -19,6 +19,8 @@ namespace ScrumBoard.Authorization.Services
 
         public async Task<Workspace> CreateWorkspaceForUserAsync(Workspace newWorkspace, CancellationToken cancellationToken = default)
         {
+            newWorkspace.PublicKey = Guid.NewGuid();
+            
             var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
             if (string.IsNullOrEmpty(userIdString))
