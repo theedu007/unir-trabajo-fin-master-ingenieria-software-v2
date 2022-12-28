@@ -22,6 +22,20 @@ namespace ScrumBoard.Authorization.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetWorkspacesForUserAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _workspaceService.GetWorkspaceForUserAsync(cancellationToken);
+                return Ok(_mapper.Map<List<WorkspaceDto>>(result));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Hubo un error al intentar obtener los espacios de trabajo del usuario");
+            }
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateWorkspaceForUserAsync([FromBody] WorkspaceDto workspaceDto, CancellationToken cancellationToken)
         {

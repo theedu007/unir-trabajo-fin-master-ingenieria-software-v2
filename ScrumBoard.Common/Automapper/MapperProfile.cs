@@ -18,6 +18,7 @@ namespace ScrumBoard.Common.Automapper
                 .ReverseMap();
 
             CreateMap<WorkspaceUi, WorkspaceUiDto>()
+
                 .ReverseMap();
         }
     }

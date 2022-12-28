@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace ScrumBoard.Common.Application.Entities
 {
@@ -12,6 +13,8 @@ namespace ScrumBoard.Common.Application.Entities
         public ObjectId Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid PublicKey { get; set; } = Guid.Empty;
     }
 }

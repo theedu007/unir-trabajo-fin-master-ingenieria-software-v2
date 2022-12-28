@@ -9,6 +9,7 @@ namespace ScrumBoard.Common.Dtos
     public class WorkspaceUiDto
     {
         public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public Guid PublicKey { get; set; } = Guid.Empty;
     }
 }

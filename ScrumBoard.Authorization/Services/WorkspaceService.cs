@@ -17,6 +17,22 @@ namespace ScrumBoard.Authorization.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<List<Workspace>> GetWorkspaceForUserAsync(CancellationToken cancellationToken = default)
+        {
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdString))
+                throw new ArgumentException("User id is null");
+
+            if (!int.TryParse(userIdString, out var userId))
+                throw new ArgumentException("Failed to parse user id");
+
+            return await _context.Workspaces
+                .Include(x => x.UserWorkspaces)
+                .Where(x => x.UserWorkspaces.Any(y => y.User.Id == userId))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<Workspace> CreateWorkspaceForUserAsync(Workspace newWorkspace, CancellationToken cancellationToken = default)
         {
             newWorkspace.PublicKey = Guid.NewGuid();

@@ -26,9 +26,42 @@ namespace ScrumBoard.BackEnd.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<Workspace>> GetWorkspacesForUserAsync(Guid userGuid, CancellationToken cancellationToken = default)
+        public async Task<List<WorkspaceUi>> GetWorkspacesForUserAsync(CancellationToken cancellationToken = default)
         {
-            return new List<Workspace>();
+            if (_httpContextAccessor.HttpContext is null)
+                throw new ArgumentException("Error en el contexto http");
+
+            var httpClient = _httpClientFactory.CreateClient(HttpClientNames.Authorization);
+
+            if (httpClient is null)
+                throw new Exception("No se pudo crear el cliente http");
+
+            var accessToken = await _httpContextAccessor.HttpContext.GetUserAccessTokenAsync();
+            if (accessToken is null)
+                throw new Exception("No se pudo obtener el token del usuario");
+
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, "api/Workspace/");
+
+            requestMessage.Headers.Clear();
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await httpClient.SendAsync(requestMessage, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var workspaceResponse = await response.Content.ReadFromJsonAsync<List<Workspace>>(cancellationToken: cancellationToken);
+
+            if (workspaceResponse is null)
+            {
+                throw new JsonException("No se pudo serializar la respuesta");
+            }
+
+            var guids = workspaceResponse.Select(x => x.PublicKey).ToList();
+            var filter = Builders<WorkspaceUi>.Filter.In(x => x.PublicKey, guids);
+
+            var uiWorkspaces = await _applicationContext.Workspaces
+                .FindAsync(filter, cancellationToken: cancellationToken);
+
+            return await uiWorkspaces.ToListAsync(cancellationToken) ?? new List<WorkspaceUi>();
         }
 
         public async Task<WorkspaceUi> CreateWorkspaceAsync(WorkspaceUi workspaceUi, CancellationToken cancellationToken = default)

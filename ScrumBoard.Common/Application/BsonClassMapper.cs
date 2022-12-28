@@ -26,6 +26,8 @@ namespace ScrumBoard.Common.Application
                     .SetSerializer(new GuidSerializer(BsonType.String))
                     .SetElementName("publicKey")
                     .SetIsRequired(true);
+                mapper.MapProperty(x => x.Description)
+                    .SetElementName("description");
             });
         }
     }

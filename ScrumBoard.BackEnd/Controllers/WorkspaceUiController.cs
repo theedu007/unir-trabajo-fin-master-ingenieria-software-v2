@@ -13,21 +13,29 @@ namespace ScrumBoard.BackEnd.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class WorkspaceController : ControllerBase
+    public class WorkspaceUiController : ControllerBase
     {
         private readonly WorkspaceUiService _workspaceService;
         private readonly IMapper _mapper;
 
-        public WorkspaceController(WorkspaceUiService workspaceService, IMapper mapper)
+        public WorkspaceUiController(WorkspaceUiService workspaceService, IMapper mapper)
         {
             _workspaceService = workspaceService;
             _mapper = mapper;
         }
 
-        [HttpGet("")]
-        public async Task<IActionResult> GetWokspacesForUserAsync(Guid userGuid)
+        [HttpGet]
+        public async Task<IActionResult> GetWokspacesForUserAsync(CancellationToken cancellationToken = default)
         {
-            return Ok();
+            try
+            {
+                var result = await _workspaceService.GetWorkspacesForUserAsync(cancellationToken);
+                return Ok(_mapper.Map<List<WorkspaceUiDto>>(result));
+            }
+            catch (Exception)
+            {
+                return BadRequest("No se pudo crear el espacio de trabajo");
+            }
         }
 
         [HttpPost("create")]
