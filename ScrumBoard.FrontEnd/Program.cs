@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using ScrumBoard.Common.Extensions.WebBuilderExtensions;
 using ScrumBoard.Common.Helpers;
+using ScrumBoard.FrontEnd.Services;
 
 namespace ScrumBoard.FrontEnd
 {
@@ -58,6 +59,9 @@ namespace ScrumBoard.FrontEnd
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
             });
+
+            builder.Services.SetupAutomapper();
+            builder.Services.AddTransient<WorkspaceService>();
 
 
             var app = builder.Build();
