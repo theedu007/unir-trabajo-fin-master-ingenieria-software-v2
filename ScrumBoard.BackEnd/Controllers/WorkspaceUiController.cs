@@ -44,7 +44,7 @@ namespace ScrumBoard.BackEnd.Controllers
             try
             {
                 var entity = _mapper.Map<WorkspaceUi>(dto);
-                var newEntity = await _workspaceService.CreateWorkspaceAsync(entity, cancellationToken);
+                    var newEntity = await _workspaceService.CreateWorkspaceAsync(entity, cancellationToken);
                 return Ok(_mapper.Map<WorkspaceUiDto>(newEntity));
             }
             catch (Exception e)

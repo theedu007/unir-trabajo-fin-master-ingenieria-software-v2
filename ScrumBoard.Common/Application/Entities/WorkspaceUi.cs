@@ -13,8 +13,7 @@ namespace ScrumBoard.Common.Application.Entities
         public ObjectId Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid PublicKey { get; set; } = Guid.Empty;
+        public List<Guid> UsersPublicKeys { get; set; } = new List<Guid>();
     }
 }

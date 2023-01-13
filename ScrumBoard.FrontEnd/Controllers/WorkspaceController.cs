@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ScrumBoard.Common.Api;
+using ScrumBoard.Common.Application.Entities;
 using ScrumBoard.Common.Dtos;
 using ScrumBoard.FrontEnd.Services;
 
@@ -26,6 +28,20 @@ namespace ScrumBoard.FrontEnd.Controllers
         {
             var result = await _workspaceService.GetWorkspaceForUserAsync(cancellationToken);
             return Ok(_mapper.Map<IList<WorkspaceUiDto>>(result));
+        }
+
+        [HttpPost("create")]
+
+        public async Task<IActionResult> CreateWorkspace([FromBody] WorkspaceUiDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await _workspaceService.CreateWorkspaceForUserAsync(dto, cancellationToken);
+
+            return Ok(new ApiResponse<WorkspaceUiDto>
+            {
+                Data = _mapper.Map<WorkspaceUiDto>(result),
+                IsSuccessful = true
+            });
         }
     }
 }
